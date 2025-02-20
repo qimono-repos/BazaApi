@@ -1,9 +1,9 @@
 using MongoDB.Entities;
-using ImageApi.Models;
+using BazaApi.Models;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -12,6 +12,7 @@ builder.Services.AddGraphQLServer()
     .AddQueryType<Query>();
 
 var app = builder.Build();
+Console.WriteLine("Created builder with controller and graphql");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -27,13 +28,17 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapGraphQL("/graphql");
 
-await DB.InitAsync("ImageDb", "mongodb://localhost:27017");
+Console.WriteLine("Configure the HTTP request pipeline");
+
+await DB.InitAsync("BazaDb", "mongodb://localhost:27017");
 await SeedDataAsync();
 
 app.Run();
 
 async Task SeedDataAsync()
 {
+  Console.WriteLine("SeedDataAsync");
+
     if (await DB.CountAsync<ImageModel>() == 0)
     {
         await new ImageModel { Name = "Image 1", Url = "http://example.com/img1.jpg" }.SaveAsync();
